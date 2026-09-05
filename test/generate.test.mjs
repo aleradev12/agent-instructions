@@ -13,8 +13,9 @@ test('combines shared defaults with local instructions', async testContext => {
   const result = await generateProject({ projectRoot, log: false });
   const output = await readFile(path.join(projectRoot, 'AGENTS.md'), 'utf8');
 
-  assert.equal(result.agentDocumentCount, 9);
+  assert.equal(result.agentDocumentCount, 11);
   assert.match(output, /## shared:code-style/);
+  assert.match(output, /## shared:flux/);
   assert.match(output, /## docs\/agents\/project\.md/);
   assert.match(output, /### Project Rule/);
 });

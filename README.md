@@ -5,7 +5,7 @@ Reusable default engineering rules and a dependency-free generator for `AGENTS.m
 ## Install from Gitea
 
 ```sh
-npm install --save-dev 'git+ssh://git@10.0.0.188/aleradev12/agent-instructions.git#v0.1.0'
+npm install --save-dev 'git+ssh://git@10.0.0.188/aleradev12/agent-instructions.git#v0.2.0'
 ```
 
 Add one project command:
@@ -51,6 +51,7 @@ Set `defaults.enabled` to `false` to omit every shared rule. Use `defaults.disab
 - `code-style`
 - `components`
 - `feature-documentation`
+- `flux`
 - `fsd`
 - `git`
 - `state-and-data`

@@ -55,6 +55,7 @@ Set `defaults.enabled` to `false` to omit every shared rule. Use `defaults.disab
 - `git`
 - `state-and-data`
 - `styling`
+- `task-tracking`
 - `testing`
 
 Every visible `.md` directly inside `agents.sourceDirectory` extends the selected defaults. The directory may be absent or empty when defaults are enabled. Nested directories and non-Markdown files are rejected.

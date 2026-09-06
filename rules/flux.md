@@ -7,6 +7,13 @@ Flux is the shared task tracker across projects (MCP server `flux`, tool names p
 - Flux may run against a local data file or a shared server; the choice is configured per checkout and per machine, so discover it instead of guessing paths or URLs.
 - If the flux tools are missing or return no projects, report this and ask how to proceed; do not create storage, configuration, or projects on your own initiative.
 
+## Planning and follow-up tasks
+
+- A task in `planning` is a draft, not agent-ready work. Never move it to `todo` or start it unless the user explicitly asks to promote that exact task.
+- Only a task already in `todo` may be moved to `in_progress` by an agent.
+- When you discover follow-up work while implementing a task, create a separate task in `planning`, then continue working only on the current task. Never promote or start that follow-up yourself.
+- When Flux supports the `requires_human` flag, set it only while **creating** a new task that requires physical action, credentials, owner approval, or clarification. Do not change `requires_human` on an existing task.
+
 ## Choosing where to work
 
 Decide before writing code, from the task itself:

@@ -5,7 +5,7 @@ Reusable default engineering rules and a dependency-free generator for `AGENTS.m
 ## Install from Gitea
 
 ```sh
-npm install --save-dev 'git+ssh://git@10.0.0.188/reusable/agent-instructions.git#v0.2.2'
+npm install --save-dev 'git+ssh://git@git.lan/master-group/reusable/agent-instructions.git#v0.3.0'
 ```
 
 Add one project command:

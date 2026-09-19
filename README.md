@@ -51,7 +51,6 @@ Set `defaults.enabled` to `false` to omit every shared rule. Use `defaults.disab
 - `code-style`
 - `components`
 - `feature-documentation`
-- `flux`
 - `fsd`
 - `git`
 - `state-and-data`

@@ -4,7 +4,8 @@ Track implementation work in GitLab issues on `git.lan` (group `master-group`) s
 
 ## Status lifecycle
 
-- Before starting work on an issue, set the `In progress` label and remove `Todo for agents` if present; the issue stays open.
+- Only start work on an issue explicitly labeled `Todo for agents`. An open issue without that label is not agent-ready work; if nothing is labeled, say so instead of picking an issue yourself.
+- Before starting work on an issue, set the `In progress` label and remove `Todo for agents`; the issue stays open.
 - Issues migrated from the retired local tracker carry `Legacy status: <x>` labels; when you pick one up, replace the legacy label with the current labels.
 - If the current state is unclear, check the issue's state, labels and comments (via `glab` or the API) rather than guessing.
 - On finishing, add a comment on the issue summarizing what was actually done: files touched, key decisions, and the verification result (build/test/boot pass or fail).

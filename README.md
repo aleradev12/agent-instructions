@@ -26,7 +26,7 @@ Create `agent-instructions.config.json` in the project root:
 
 ```json
 {
-  "$schema": "./node_modules/@aleradev/agent-instructions/config.schema.json",
+  "$schema": "./node_modules/@aleradev12/agent-instructions/config.schema.json",
   "title": "My Project Agent Instructions",
   "defaults": {
     "enabled": true,

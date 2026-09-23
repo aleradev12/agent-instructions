@@ -17,6 +17,10 @@ test('combines shared defaults with local instructions', async testContext => {
   assert.match(output, /## shared:code-style/);
   assert.match(output, /## docs\/agents\/project\.md/);
   assert.match(output, /### Project Rule/);
+  assert.equal(result.skillCount, 1);
+  const sharedSkill = await readFile(path.join(projectRoot, '.agents/skills/board-task-workflow/SKILL.md'), 'utf8');
+  assert.match(sharedSkill, /GPT Luna/);
+  assert.equal(sharedSkill, await readFile(path.join(projectRoot, '.claude/skills/board-task-workflow/SKILL.md'), 'utf8'));
 });
 
 test('can disable individual defaults or the complete default set', async testContext => {
@@ -40,6 +44,41 @@ test('can disable individual defaults or the complete default set', async testCo
   output = await readFile(path.join(projectRoot, 'AGENTS.md'), 'utf8');
   assert.doesNotMatch(output, /## shared:/);
   assert.match(output, /## docs\/agents\/project\.md/);
+});
+
+test('disables shared skills without removing local project skills', async testContext => {
+  const projectRoot = await createProject(testContext);
+  await writeProjectFile(projectRoot, 'docs/skills/project-review.md', [
+    '---',
+    'name: project-review',
+    'description: "Review project contracts."',
+    '---',
+    '',
+    '# Review',
+  ].join('\n'));
+  await generateProject({ projectRoot, log: false });
+  await writeConfiguration(projectRoot, { skills: { disabled: ['board-task-workflow'] } });
+  const result = await generateProject({ projectRoot, log: false });
+  assert.equal(result.skillCount, 1);
+  await assert.rejects(readFile(path.join(projectRoot, '.agents/skills/board-task-workflow/SKILL.md'), 'utf8'), { code: 'ENOENT' });
+  assert.match(await readFile(path.join(projectRoot, '.agents/skills/project-review/SKILL.md'), 'utf8'), /# Review/);
+});
+
+test('rejects unknown disabled and duplicate shared skill names', async testContext => {
+  const projectRoot = await createProject(testContext);
+  await writeConfiguration(projectRoot, { skills: { disabled: ['missing-skill'] } });
+  await assert.rejects(generateProject({ projectRoot, log: false }), /Unknown shared skill/);
+
+  await writeConfiguration(projectRoot, {});
+  await writeProjectFile(projectRoot, 'docs/skills/board-task-workflow.md', [
+    '---',
+    'name: board-task-workflow',
+    'description: "Another board skill."',
+    '---',
+    '',
+    '# Duplicate',
+  ].join('\n'));
+  await assert.rejects(generateProject({ projectRoot, log: false }), /Duplicate shared and project skill name/);
 });
 
 test('generates matching Codex and Claude skills and removes stale output', async testContext => {

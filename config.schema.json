@@ -50,6 +50,14 @@
         "enabled": {
           "type": "boolean"
         },
+        "disabled": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+          }
+        },
         "sourceDirectory": {
           "type": "string",
           "minLength": 1

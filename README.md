@@ -2,10 +2,10 @@
 
 Reusable default engineering rules and a dependency-free generator for `AGENTS.md`, Codex project skills, and Claude project skills.
 
-## Install from Gitea
+## Install from GitLab
 
 ```sh
-npm install --save-dev 'git+ssh://git@git.lan/master-group/reusable/agent-instructions.git#v0.3.0'
+npm install --save-dev 'git+ssh://git@git.lan/master-group/reusable/agent-instructions.git#v0.4.0'
 ```
 
 Add one project command:
@@ -38,6 +38,7 @@ Create `agent-instructions.config.json` in the project root:
   },
   "skills": {
     "enabled": true,
+    "disabled": [],
     "sourceDirectory": "docs/skills",
     "outputs": [".agents/skills", ".claude/skills"]
   }
@@ -62,7 +63,9 @@ Every visible `.md` directly inside `agents.sourceDirectory` extends the selecte
 
 ## Project skills
 
-Each Markdown file in `skills.sourceDirectory` is a shared source for one Codex and Claude skill. Its filename must match the `name` field:
+The package includes the shared `board-task-workflow` skill for GitLab board issue triage, child Task decomposition (`[medium]`/`[high]`), and tier-aware execution (e.g. GPT Luna / GPT Sol). It is generated to every configured skill output by default. Add `"board-task-workflow"` to `skills.disabled` to omit it; unknown names are rejected.
+
+Each Markdown file in `skills.sourceDirectory` is a project-specific source for one Codex and Claude skill. Its filename must match the `name` field and must not collide with an enabled shared skill:
 
 ```md
 ---
@@ -77,7 +80,7 @@ Follow the project-specific workflow here.
 
 The generator writes identical `SKILL.md` files to each configured output directory. It removes obsolete generated skills, but refuses to overwrite manually authored skills or remove a generated skill directory that contains extra files.
 
-Set `skills.enabled` to `false` when the project needs only `AGENTS.md` generation.
+Set `skills.enabled` to `false` when the project needs only `AGENTS.md` generation. Project-local skills are still supported alongside the package's shared skill.
 
 ## Development
 

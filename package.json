@@ -1,6 +1,6 @@
 {
   "name": "@aleradev12/agent-instructions",
-  "version": "0.3.1",
+  "version": "0.4.0",
   "description": "Reusable AGENTS.md and project skill generator",
   "type": "module",
   "private": true,
@@ -13,6 +13,7 @@
   "files": [
     "bin",
     "rules",
+    "skills",
     "src",
     "config.schema.json",
     "README.md"

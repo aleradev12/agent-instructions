@@ -14,4 +14,4 @@ Track implementation work in GitLab issues on `git.lan` (group `master-group`) s
 
 ## Delegating to a subagent
 
-A freshly spawned subagent has no memory of tracker conventions. When delegating a tracked issue to one, state explicitly in its prompt: the issue URL or project path with issue id(s) it owns, and that this status lifecycle applies — otherwise it will do the work without ever touching the tracker.
+Economical Subagent Use owns the handoff procedure. Point the assigned tracker owner to this lifecycle and the issue; if a child cannot access the tracker, the parent posts its verified report. Do not silently drop status updates or grant a child publication/closure authority just to obtain a comment.

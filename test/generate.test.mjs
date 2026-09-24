@@ -13,13 +13,20 @@ test('combines shared defaults with local instructions', async testContext => {
   const result = await generateProject({ projectRoot, log: false });
   const output = await readFile(path.join(projectRoot, 'AGENTS.md'), 'utf8');
 
-  assert.equal(result.agentDocumentCount, 10);
+  assert.equal(result.agentDocumentCount, 13);
   assert.match(output, /## shared:code-style/);
   assert.match(output, /## docs\/agents\/project\.md/);
   assert.match(output, /### Project Rule/);
-  assert.equal(result.skillCount, 2);
+  assert.equal(result.skillCount, 3);
   const sharedSkill = await readFile(path.join(projectRoot, '.agents/skills/board-task-workflow/SKILL.md'), 'utf8');
-  assert.match(sharedSkill, /GPT Luna/);
+  assert.match(sharedSkill, /Economical Subagent Use/);
+  assert.match(output, /GPT Luna/);
+  assert.match(output, /## shared:module-boundaries/);
+  assert.match(output, /## shared:subagents/);
+  assert.match(output, /## shared:incremental-delivery/);
+  const maintainable = await readFile(path.join(projectRoot, '.agents/skills/maintainable-change/SKILL.md'), 'utf8');
+  assert.match(maintainable, /agent-code-size/);
+  assert.equal(maintainable, await readFile(path.join(projectRoot, '.claude/skills/maintainable-change/SKILL.md'), 'utf8'));
   assert.equal(sharedSkill, await readFile(path.join(projectRoot, '.claude/skills/board-task-workflow/SKILL.md'), 'utf8'));
   assert.match(await readFile(path.join(projectRoot, '.agents/skills/storybook/SKILL.md'), 'utf8'), /React web and React Native/);
 });
@@ -60,7 +67,7 @@ test('disables shared skills without removing local project skills', async testC
   await generateProject({ projectRoot, log: false });
   await writeConfiguration(projectRoot, { skills: { disabled: ['board-task-workflow'] } });
   const result = await generateProject({ projectRoot, log: false });
-  assert.equal(result.skillCount, 2);
+  assert.equal(result.skillCount, 3);
   await assert.rejects(readFile(path.join(projectRoot, '.agents/skills/board-task-workflow/SKILL.md'), 'utf8'), { code: 'ENOENT' });
   assert.match(await readFile(path.join(projectRoot, '.agents/skills/storybook/SKILL.md'), 'utf8'), /React web and React Native/);
   assert.match(await readFile(path.join(projectRoot, '.agents/skills/project-review/SKILL.md'), 'utf8'), /# Review/);

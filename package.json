@@ -5,7 +5,8 @@
   "type": "module",
   "private": true,
   "bin": {
-    "agent-instructions": "./bin/agent-instructions.mjs"
+    "agent-instructions": "./bin/agent-instructions.mjs",
+    "agent-code-size": "./bin/agent-code-size.mjs"
   },
   "exports": {
     ".": "./src/index.mjs"
@@ -20,7 +21,7 @@
   ],
   "scripts": {
     "test": "node --test",
-    "check": "node --check bin/agent-instructions.mjs && node --check src/index.mjs && node --test"
+    "check": "node --check bin/agent-instructions.mjs && node --check bin/agent-code-size.mjs && node --check src/index.mjs && node --check src/code-size.mjs && node --test"
   },
   "engines": {
     "node": ">=20"

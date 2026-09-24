@@ -11,7 +11,7 @@
 
 ## Comments
 
-Write a comment only for a non-obvious reason, platform constraint, or required order. Keep it short, understandable without task history, and stable after normal refactoring.
+Prefer self-documenting names, types and small operations over explanatory comments. Write a comment only for a non-obvious reason, platform constraint, or required order. Keep it short, understandable without task history, and stable after normal refactoring.
 
 - Explain why; do not narrate the code.
 - Write code comments in English.
@@ -27,6 +27,13 @@ Write a comment only for a non-obvious reason, platform constraint, or required 
 - Name magic values with their unit: `PREVIEW_STALE_TIMEOUT_MS`, `MAX_CAPTURE_RETRIES`.
 - Include units in property names or types: `durationMs`, `sampleRateHz`, `byteLength`.
 - Use branded types or opaque wrappers to distinguish entity IDs in domain code.
+
+## File size
+
+- Aim for source files of at most 350 lines. Above that, inspect responsibilities; at 500 or more, split by cohesive behavior where practical or explain the exception in the change report.
+- Do not satisfy a line budget by compressing code, moving unrelated helpers into a dumping ground, or creating one-line indirection. A reader should understand the extracted boundary.
+- Generated sources and declarative fixtures may be exceptions; identify them explicitly. Do not enlarge a legacy oversized file casually or refactor unrelated files just to make a size check green.
+- The size checker reports a maintainability signal, not proof of architecture quality. Policy and exceptions remain human-readable; strict CI adoption is an explicit project decision.
 
 ## File order
 

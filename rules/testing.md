@@ -1,41 +1,21 @@
 # Testing
 
-A test must protect an observable contract or a realistic failure risk. Do not add tests that mirror implementation lines without a plausible regression.
+Protect observable behavior and realistic failure risks. Use a small, reliable check set, not exhaustive test layers or repeated reviews for every change.
 
-## Placement
+## Default verification
 
-- Colocate unit tests: `calculateFrameStart.ts` → `calculateFrameStart.test.ts`.
-- Put fixtures shared by packages and platform suites in `packages/test-fixtures`.
-- Import a module’s public API when testing its external contract. Directly import an internal helper only in that helper’s unit test.
-- Configure the runner to match every supported test suffix. CI must prove a test file was discovered, not merely that it exists.
+- Run affected lint/type checks, focused behavior tests and the repository's required checks. For a new end-to-end capability, add one reproducible smoke path through its real boundaries.
+- Test the important failure for the changed behavior: invalid input, denied access, retry, provider timeout or interrupted write as appropriate. Do not add every possible category to a trivial change.
+- Changes to identity, permissions, shared contracts or durable state need targeted integration/negative tests in addition to a happy path. Cross-user/tenant data access and duplicate writes are not optional polish.
+- Use deterministic fakes for external providers and inject time/randomness when outcomes depend on them. A live paid AI call is not a unit-test prerequisite; test the real adapter separately when credentials and environment are authorized.
+- Do not claim a mocked test proves a real deployment or live provider works. Report checks that could not be run.
 
-## Verification layers
+## Placement and quality
 
-| Layer | Coverage |
-| --- | --- |
-| Domain unit/property | Block invariants, rational time, reverse, audio anchors, deterministic merge |
-| Adapter contract | SQLite, AssetStore, archive, network schemas, camera/media error mapping |
-| Integration | Command → repository → projection; sync operations/assets; render plan → decoder |
-| Native/device | Real lenses and controls, preview/photo geometry, interruptions, codecs |
-| End-to-end acceptance | Product REQs on phone and desktop, disconnects, and project transfer |
+- Colocate focused unit tests with their owner. Put cross-module fixtures in a shared test location only when actually shared.
+- Test public contracts; import an internal helper directly only in that helper's unit test. Assert outcomes rather than duplicating implementation lines.
+- Ensure the runner discovers every supported test suffix. Prefer explicit assertions to broad snapshots or arbitrary sleeps.
+- For a bug fix, demonstrate the regression fails before the fix when practical. Name the violated behavior in the test and failure output.
+- Run focused checks after editing, then required repository checks. Rerun unchanged checks only when a changed dependency, environment or integration result warrants it.
 
-## Core rules
-
-- Keep domain and timeline packages pure and test them without React Native or Electron.
-- Component tests cover user behavior; extract and test pure calculations separately.
-- Inject controllable time, random IDs, filesystem, and network adapters.
-- Golden images include a grid, asymmetric corners, orientation metadata, and expected perspective output.
-- Audio fixtures include impulses at known sample positions; decode exported MP4 and inspect actual timestamps.
-- The sync suite reorders, duplicates, and drops operations and chunks. The same DAG must produce the same projection or conflict set.
-- The crash suite interrupts ingestion after staging, rename, SQL commit, and acknowledgement boundaries.
-- Emulator-only testing cannot prove device camera support; record device model and OS version with native results.
-
-## Validate the test
-
-- A new regression test must first fail against the known faulty behavior or fixture.
-- Failure output names the violated contract and relevant input.
-- Do not hide flaky timing behind a large sleep; use a controllable clock/event and wait for explicit state.
-- UI snapshots do not replace assertions for critical actions and state.
-- Run the focused suite after a change, then required repository checks. Do not rerun unchanged checks without a reason.
-
-The [delivery plan](../technical/delivery.md) defines the complete risk and acceptance matrix.
+Load, stress, broad property-based suites and specialized device/media matrices are project-specific additions, not a default tax. Add them for a concrete requirement or observed risk, and link their plan from the owning module.

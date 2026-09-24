@@ -9,7 +9,7 @@ Use the shared rules in the project's generated AGENTS.md: Module Boundaries, Co
 
 ## Before editing
 
-1. Read the nearest module README and follow its navigation only as far as needed. Locate the behavior's current owner and check for an existing reusable implementation.
+1. Read the nearest module README and follow its navigation only as far as needed. Locate the behavior's current owner and check for an existing reusable implementation. For an existing UI, apply the preservation procedure in Components and UI Logic before proposing a new pattern.
 2. State a short change boundary: observable result, owning module, consumers/contracts affected, exclusions and verification. Ask about unresolved product choices before turning them into code.
 3. For a large request, choose a small end-to-end slice and name the handoff to the next slice. Apply Economical Subagent Use only if delegation is authorized; this skill is not permission to spawn agents.
 

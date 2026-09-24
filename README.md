@@ -5,7 +5,7 @@ Reusable default engineering rules and a dependency-free generator for `AGENTS.m
 ## Install from GitLab
 
 ```sh
-npm install --save-dev 'git+ssh://git@git.lan/master-group/reusable/agent-instructions.git#v0.6.0'
+npm install --save-dev 'git+ssh://git@git.lan/master-group/reusable/agent-instructions.git#v0.6.1'
 ```
 
 Add one project command:
@@ -100,8 +100,9 @@ Edit the authoritative source, then regenerate consumers; generated copies are n
 | Readability, comments, file-size policy | [Code Style](rules/code-style.md) |
 | Responsibility, imports and reuse discovery | [Module Boundaries](rules/module-boundaries.md) |
 | UI FSD and backend layer adaptation | [FSD](rules/fsd.md) |
+| Existing UI preservation and component responsibilities | [Components](rules/components.md) |
 | Checkpoints and local GitLab publication | [Git](rules/git.md) |
-| README hierarchy and single-source documentation | [Module Documentation](rules/feature-documentation.md) |
+| Documentation language, README hierarchy and single source | [Module Documentation](rules/feature-documentation.md) |
 | Scope and completion | [Incremental Delivery](rules/incremental-delivery.md) |
 | Proportionate verification | [Testing](rules/testing.md) |
 | Delegation, roles and model routing | [Economical Subagent Use](rules/subagents.md) |

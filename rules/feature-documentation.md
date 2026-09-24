@@ -2,6 +2,10 @@
 
 Every meaningful module owns a short README: a navigation map, not an inventory of its implementation. This rule owns documentation structure and instruction-source discipline.
 
+## Language
+
+Write documentation in English unless the user explicitly requests another language or an explicit project rule defines an exception. This covers technical READMEs, architecture notes, ADRs, instructions and skills; the conversation's language alone does not change the documentation default. Follow a project's declared content/localization policy for user-facing material. Preserve historical submissions and do not bulk-translate unrelated files as a side effect of a small change.
+
 ## Navigate from general to specific
 
 - The root README explains the product, entry points, setup commands and top-level modules. It does not document every subsystem.

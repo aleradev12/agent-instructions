@@ -17,10 +17,11 @@ test('combines shared defaults with local instructions', async testContext => {
   assert.match(output, /## shared:code-style/);
   assert.match(output, /## docs\/agents\/project\.md/);
   assert.match(output, /### Project Rule/);
-  assert.equal(result.skillCount, 1);
+  assert.equal(result.skillCount, 2);
   const sharedSkill = await readFile(path.join(projectRoot, '.agents/skills/board-task-workflow/SKILL.md'), 'utf8');
   assert.match(sharedSkill, /GPT Luna/);
   assert.equal(sharedSkill, await readFile(path.join(projectRoot, '.claude/skills/board-task-workflow/SKILL.md'), 'utf8'));
+  assert.match(await readFile(path.join(projectRoot, '.agents/skills/storybook/SKILL.md'), 'utf8'), /React web and React Native/);
 });
 
 test('can disable individual defaults or the complete default set', async testContext => {
@@ -59,8 +60,9 @@ test('disables shared skills without removing local project skills', async testC
   await generateProject({ projectRoot, log: false });
   await writeConfiguration(projectRoot, { skills: { disabled: ['board-task-workflow'] } });
   const result = await generateProject({ projectRoot, log: false });
-  assert.equal(result.skillCount, 1);
+  assert.equal(result.skillCount, 2);
   await assert.rejects(readFile(path.join(projectRoot, '.agents/skills/board-task-workflow/SKILL.md'), 'utf8'), { code: 'ENOENT' });
+  assert.match(await readFile(path.join(projectRoot, '.agents/skills/storybook/SKILL.md'), 'utf8'), /React web and React Native/);
   assert.match(await readFile(path.join(projectRoot, '.agents/skills/project-review/SKILL.md'), 'utf8'), /# Review/);
 });
 

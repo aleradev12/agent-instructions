@@ -63,7 +63,12 @@ Every visible `.md` directly inside `agents.sourceDirectory` extends the selecte
 
 ## Project skills
 
-The package includes the shared `board-task-workflow` skill for GitLab board issue triage, child Task decomposition (`[medium]`/`[high]`), and tier-aware execution (e.g. GPT Luna / GPT Sol). It is generated to every configured skill output by default. Add `"board-task-workflow"` to `skills.disabled` to omit it; unknown names are rejected.
+The package includes shared skills generated to every configured skill output by default:
+
+- `board-task-workflow` for GitLab board issue triage, child Task decomposition (`[medium]`/`[high]`), and tier-aware execution (e.g. GPT Luna / GPT Sol).
+- `storybook` for authoring and maintaining React Native on-device Storybook stories, controls, layout, and the project's Storybook-specific tooling.
+
+Add a shared skill name to `skills.disabled` to omit it; unknown names are rejected.
 
 Each Markdown file in `skills.sourceDirectory` is a project-specific source for one Codex and Claude skill. Its filename must match the `name` field and must not collide with an enabled shared skill:
 

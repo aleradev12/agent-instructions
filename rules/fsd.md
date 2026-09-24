@@ -1,110 +1,52 @@
 # FSD and File Structure
 
-## Layers
+This rule owns layer directions and slice layout. Module Boundaries owns reuse and the discovery index; Module Documentation owns README structure. Do not repeat those specifications here.
 
-Every UI client follows Feature-Sliced Design:
+## UI layers
 
-```text
-app/       # startup, providers, routing, lifecycle, global composition
-pages/     # screens and route-level composition
-widgets/   # large self-contained parts of a page
-features/  # complete user actions
-entities/  # UI representation of domain entities
-shared/    # domain-neutral UI, libraries, config, API primitives, and assets
-```
-
-Imports point down: `app → pages → widgets → features → entities → shared`. A slice must not import another slice on the same layer. Move shared composition up a layer and reusable technical code down to `shared`.
-
-Domain, application services, timeline, synchronization, and media contracts live in framework-independent packages. They are not FSD layers. UI slices import their public APIs; domain packages never import applications.
-
-## Slices and segments
-
-- One slice owns one domain area or user action: `frame`, `audio-clip`, `capture-frame`, `reverse-block`.
-- Name features with actions and entities with nouns.
-- Supported segments are `ui`, `model`, `api`, `lib`, `config`, and `assets`.
-- Create a segment only when it owns real code; identical empty structures add no value.
-- Do not create a `components` segment inside a slice; components belong in `ui`.
-- Do not create a universal `hooks` segment; place each hook by responsibility.
+UI clients follow Feature-Sliced Design:
 
 ```text
-features/capture-frame/
-  api/                    # remote-command adapter owned by the feature
-  model/                  # orchestration and UI state for the action
-  ui/CaptureButton/
-  index.ts
-
-entities/frame/
-  model/                  # UI-facing selectors and entity types
-  ui/FrameThumbnail/
-  index.ts
-
-shared/lib/timing/
-  useThrottledValue.ts    # domain-neutral hook
+app/       # startup, providers, routing, global composition
+pages/     # screens and route composition
+widgets/   # self-contained page sections
+features/  # user actions
+entities/  # UI-facing domain representations
+shared/    # domain-neutral UI, libraries, config, API primitives, assets
 ```
 
-Server or peer interaction belongs in `api`, domain-facing state in `model`, component-local behavior beside the component in `ui`, and generic technical logic in `shared/lib`.
+Imports point down: `app → pages → widgets → features → entities → shared`. A slice must not import another slice on the same layer. Move composition up; apply Module Boundaries before moving behavior down. Framework-independent domain packages do not import UI applications.
 
-## Public API
+## Backend adaptation
 
-- `index.ts` contains imports and re-exports only; no calculations or side effects.
-- External code imports a slice through its `index.ts`.
-- Deep imports into another slice are forbidden.
-- Direct relative imports are allowed inside one slice.
-- Export the minimum necessary surface; keep internal helpers and transport DTOs private until a consumer needs them.
-- CI enforces layer direction and slice boundaries with ESLint boundary rules.
-
-## File and folder names
-
-- React component files and folders use `PascalCase`: `FrameThumbnail/FrameThumbnail.tsx`.
-- A file with one primary export matches that export: `calculateFrameStart.ts`, `useCaptureState.ts`.
-- Feature and grouping folders use `kebab-case`: `capture-frame`, `audio-clips`.
-- Assets use `kebab-case`: `empty-project.svg`.
-- A feature overview is `README.md`; additional local guides use `kebab-case.md`.
-- Use names such as `utils.ts`, `helpers.ts`, or `common.ts` only for a small cohesive group. A reusable operation gets its own named file.
-
-## Application example
+Use FSD-like responsibility slices on the server, not artificial pages/widgets. A default direction is:
 
 ```text
-apps/mobile/src/
-  app/
-    providers/
-    navigation/
-  pages/
-    capture/
-    edit-project/
-  widgets/
-    camera-workspace/
-    timeline/
-    camera-inspector/
-  features/
-    capture-frame/
-    select-lens/
-    configure-framing/
-    reverse-block/
-    sync-project/
-  entities/
-    project/
-    block/
-    frame/
-    audio-clip/
-    camera/
-  shared/
-    ui/
-    lib/
-    api/
-    config/
-    assets/
+app/        # composition root, dependency injection, startup
+adapters/   # HTTP/GraphQL, jobs, persistence, external providers
+workflows/  # orchestration spanning several use cases
+features/   # application use cases and the ports they need
+entities/   # domain state, invariants, policies and domain ports
+shared/     # domain-neutral technical primitives
 ```
 
-Electron `main`, `preload`, and workers are separate runtime contexts outside renderer FSD. Swift, Kotlin, and C++ modules live in platform modules and implement ports. Browser server handlers never enter the `remote-web` renderer.
+Dependencies point down this list; unused layers need not exist. Incoming adapters call workflow/feature public APIs. Outgoing adapters implement ports declared by their consuming feature/domain; features never import concrete repositories, NestJS controllers or provider SDKs. The composition root wires implementations to ports.
 
-## Feature documentation
+Features do not call sibling feature internals; multi-use-case orchestration belongs in workflows. Same-layer entity slices likewise stay independent: pass IDs or explicit projections at a higher boundary, or put a genuinely cohesive aggregate under one owner. Do not evade the rule with a global business `shared/types` bucket or service locator.
 
-Add a feature README when a scenario has non-obvious rules or several interacting parts. A simple button does not require documentation.
+A small service may start with app, features, entities and one adapter. Split only along real responsibilities, not to fill an empty directory template. Keep one-way dependency rules even when runtime calls return data upwards. This is a backend adaptation, not a claim that server layers are official frontend FSD terminology.
 
-Use two sections:
+## Slices, segments and public API
 
-1. `Business requirements` describes observable behavior and scope without implementation detail.
-2. `Technical notes` maps the parts and records non-obvious decisions, ordering, and reasons.
+- Name feature slices with actions and entity slices with nouns. One slice owns one responsibility.
+- UI segments may be `ui`, `model`, `api`, `lib`, `config`, `assets`; server slices use only applicable segments, such as `model`, `ports`, `lib`, `config`. Do not add UI segments to backend code or a universal `hooks` folder.
+- External consumers import a slice through its public entry point, never private deep paths. Inside one slice, direct relative imports are fine.
+- Export the minimum contract consumers need; keep side effects out of barrel exports. Code Style owns entry-point formatting.
+- Enforce layer direction, sibling isolation and public-entry imports with the project's boundary linter. Include forbidden-import examples so aliases, relative paths and type-only imports cannot bypass it. No custom duplicate checker when existing tooling can enforce the rule.
 
-Do not restate code or preserve removed approaches. A rename or behavior-preserving refactor should not require changing the README.
+## Names and runtime boundaries
+
+- React component files/folders use PascalCase; feature/grouping folders and assets use kebab-case.
+- A file with one main export matches that export. Prefer cohesive names over a growing `utils`, `helpers` or `common` bucket.
+- Domain modules do not import applications; applications share explicit contracts rather than each other's internals. Browser bundles must not receive server persistence, secrets or provider credentials through a shared package.
+- Electron main/preload, native modules, background workers and server processes are distinct runtime contexts, not renderer FSD slices. Model their boundaries explicitly where the project uses them.

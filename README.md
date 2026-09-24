@@ -5,7 +5,7 @@ Reusable default engineering rules and a dependency-free generator for `AGENTS.m
 ## Install from GitLab
 
 ```sh
-npm install --save-dev 'git+ssh://git@git.lan/master-group/reusable/agent-instructions.git#v0.5.0'
+npm install --save-dev 'git+ssh://git@git.lan/master-group/reusable/agent-instructions.git#v0.6.0'
 ```
 
 Add one project command:
@@ -30,7 +30,7 @@ Create `agent-instructions.config.json` in the project root:
   "title": "My Project Agent Instructions",
   "defaults": {
     "enabled": true,
-    "disabled": ["fsd"]
+    "disabled": []
   },
   "agents": {
     "sourceDirectory": "docs/agents",
@@ -45,7 +45,7 @@ Create `agent-instructions.config.json` in the project root:
 }
 ```
 
-All fields are optional. Without a config file, the values above apply except that no default rule is disabled and the title is `Project Agent Instructions`.
+All fields are optional. Without a config file, the values above apply except that the title is `Project Agent Instructions`.
 
 Set `defaults.enabled` to `false` to omit every shared rule. Use `defaults.disabled` to omit individual rules while keeping the rest. Available rule IDs are:
 
@@ -98,7 +98,9 @@ Edit the authoritative source, then regenerate consumers; generated copies are n
 | Topic | Source |
 | --- | --- |
 | Readability, comments, file-size policy | [Code Style](rules/code-style.md) |
-| Responsibility, imports and reuse | [Module Boundaries](rules/module-boundaries.md) |
+| Responsibility, imports and reuse discovery | [Module Boundaries](rules/module-boundaries.md) |
+| UI FSD and backend layer adaptation | [FSD](rules/fsd.md) |
+| Checkpoints and local GitLab publication | [Git](rules/git.md) |
 | README hierarchy and single-source documentation | [Module Documentation](rules/feature-documentation.md) |
 | Scope and completion | [Incremental Delivery](rules/incremental-delivery.md) |
 | Proportionate verification | [Testing](rules/testing.md) |
@@ -109,7 +111,7 @@ Project-local sources should specify domain boundaries, exceptions and acceptanc
 
 ## Source-size signal
 
-The maintainability rules, `maintainable-change` skill and this CLI are unreleased additions after `v0.5.0`. Test them from this checkout (`node bin/agent-code-size.mjs ...`) or a local package install until a new release is tagged; the pinned install above does not include them yet.
+The maintainability rules and this CLI are included starting with `v0.6.0`. Existing consumers must update the dependency and regenerate their instructions to receive the new rules.
 
 ```sh
 agent-code-size                       # Git tracked + non-ignored untracked sources

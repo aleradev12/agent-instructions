@@ -5,7 +5,7 @@ Reusable default engineering rules and a dependency-free generator for `AGENTS.m
 ## Install from GitLab
 
 ```sh
-npm install --save-dev 'git+ssh://git@git.lan/master-group/reusable/agent-instructions.git#v0.6.1'
+npm install --save-dev 'git+ssh://git@git.lan/master-group/reusable/agent-instructions.git#v0.6.2'
 ```
 
 Add one project command:

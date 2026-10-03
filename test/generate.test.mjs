@@ -135,3 +135,35 @@ async function writeProjectFile(projectRoot, relativePath, content) {
   await mkdir(path.dirname(filePath), { recursive: true });
   await writeFile(filePath, content, 'utf8');
 }
+
+test('keeps headings and links inside fenced code blocks unchanged', async testContext => {
+  const projectRoot = await createProject(testContext);
+  await writeProjectFile(projectRoot, 'docs/agents/project.md', [
+    '# Log',
+    '',
+    'See [guide](../guide.md).',
+    '',
+    '```markdown',
+    '### 2026-10-01',
+    '[example](relative.md)',
+    '```',
+    '',
+    '~~~~',
+    '# shell comment',
+    '```',
+    '~~~~',
+    '',
+    '## After',
+  ].join('\n'));
+  await writeConfiguration(projectRoot, { defaults: { enabled: false }, skills: { enabled: false } });
+
+  await generateProject({ projectRoot, log: false });
+  const output = await readFile(path.join(projectRoot, 'AGENTS.md'), 'utf8');
+
+  assert.match(output, /^### Log$/m);
+  assert.match(output, /\[guide\]\(docs\/guide\.md\)/);
+  assert.match(output, /^### 2026-10-01$/m);
+  assert.match(output, /^\[example\]\(relative\.md\)$/m);
+  assert.match(output, /^# shell comment$/m);
+  assert.match(output, /^#### After$/m);
+});

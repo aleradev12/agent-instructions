@@ -267,7 +267,30 @@ function renderAgentInstructions(title, documents) {
 }
 
 function prepareEmbeddedMarkdown(source, relativePath) {
-  const rewrittenLinks = source.replace(
+  let fence = null;
+
+  return source.split('\n').map(line => {
+    const fenceMatch = line.match(/^ {0,3}(`{3,}|~{3,})/);
+
+    if (fence !== null) {
+      if (fenceMatch && fenceMatch[1][0] === fence[0] && fenceMatch[1].length >= fence.length
+        && line.trim() === fenceMatch[1]) {
+        fence = null;
+      }
+      return line;
+    }
+
+    if (fenceMatch) {
+      fence = fenceMatch[1];
+      return line;
+    }
+
+    return rewriteRelativeLinks(line, relativePath).replace(/^(#{1,4}) /, '##$1 ');
+  }).join('\n');
+}
+
+function rewriteRelativeLinks(line, relativePath) {
+  return line.replace(
     /(\[[^\]]*\]\()([^)]+)(\))/g,
     (match, opening, target, closing) => {
       if (/^(?:[a-z]+:|#|\/)/i.test(target)) {
@@ -283,8 +306,6 @@ function prepareEmbeddedMarkdown(source, relativePath) {
       return `${opening}${resolvedTarget}${closing}`;
     },
   );
-
-  return rewrittenLinks.replace(/^(#{1,4}) /gm, '##$1 ');
 }
 
 async function loadSkillSources(directoryPath, projectRoot) {

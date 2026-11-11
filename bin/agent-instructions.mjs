@@ -1,22 +1,30 @@
 #!/usr/bin/env node
 
+import { parseArgs } from 'node:util';
+
 import { generateProject } from '../src/index.mjs';
 
-const argumentsList = process.argv.slice(2);
-let configPath = 'agent-instructions.config.json';
-
-if (argumentsList.length > 0) {
-  if (argumentsList.length !== 2 || argumentsList[0] !== '--config') {
-    process.stderr.write('Usage: agent-instructions [--config <path>]\n');
-    process.exit(1);
-  }
-
-  configPath = argumentsList[1];
-}
+const usage = [
+  'Usage: agent-instructions [--config <path>] [--target <platform>]... [--help]',
+  'Platforms: codex, claude, pi, cursor, all. Repeat --target to select several.',
+  'Without --target, preserves the configured instruction and skill outputs.',
+].join('\n');
 
 try {
-  await generateProject({ configPath });
+  const { values } = parseArgs({
+    options: {
+      config: { type: 'string' },
+      target: { type: 'string', multiple: true },
+      help: { type: 'boolean' },
+    },
+  });
+
+  if (values.help) {
+    process.stdout.write(`${usage}\n`);
+  } else {
+    await generateProject({ configPath: values.config, targets: values.target });
+  }
 } catch (error) {
-  process.stderr.write(`${error.message}\n`);
-  process.exit(1);
+  process.stderr.write(`${error.message}\n${usage}\n`);
+  process.exitCode = 1;
 }

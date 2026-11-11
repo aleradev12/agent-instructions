@@ -1,7 +1,7 @@
 {
   "name": "@aleradev12/agent-instructions",
-  "version": "0.6.2",
-  "description": "Reusable AGENTS.md and project skill generator",
+  "version": "0.7.0",
+  "description": "Reusable instruction and skill generator for Codex, Claude Code, Pi, and Cursor",
   "type": "module",
   "private": true,
   "bin": {
@@ -21,7 +21,7 @@
   ],
   "scripts": {
     "test": "node --test",
-    "check": "node --check bin/agent-instructions.mjs && node --check bin/agent-code-size.mjs && node --check src/index.mjs && node --check src/code-size.mjs && node --test"
+    "check": "node --check bin/agent-instructions.mjs && node --check bin/agent-code-size.mjs && node --check src/index.mjs && node --check src/targets.mjs && node --check src/code-size.mjs && node --test"
   },
   "engines": {
     "node": ">=20"
